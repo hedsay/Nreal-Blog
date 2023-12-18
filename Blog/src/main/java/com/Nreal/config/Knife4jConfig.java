@@ -13,7 +13,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 @Configuration
 @EnableSwagger2WebMvc
 public class Knife4jConfig {
-
     @Bean
     public Docket defaultApi2() {
         Docket docket=new Docket(DocumentationType.SWAGGER_2)
@@ -32,5 +31,4 @@ public class Knife4jConfig {
                 .build();
         return docket;
     }
-    
 }

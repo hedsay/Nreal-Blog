@@ -23,9 +23,11 @@ public class BeanCopyUtils {
         //返回结果
         return result;
     }
+
     public static <O,V> List<V> copyBeanList(List<O> list, Class<V> clazz){
         return list.stream()
                 .map(o -> copyBean(o, clazz))
                 .collect(Collectors.toList());
     }
+
 }
