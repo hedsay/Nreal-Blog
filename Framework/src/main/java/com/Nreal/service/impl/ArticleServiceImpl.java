@@ -2,6 +2,8 @@ package com.Nreal.service.impl;
 
 import com.Nreal.constant.SystemConstants;
 import com.Nreal.domain.entity.Article;
+import com.Nreal.domain.entity.Category;
+import com.Nreal.domain.vo.ArticleDetailVo;
 import com.Nreal.domain.vo.ArticleListVo;
 import com.Nreal.domain.vo.HotArticleVo;
 import com.Nreal.domain.vo.PageVo;
@@ -60,5 +62,18 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         List<ArticleListVo> articleListVos = BeanCopyUtils.copyBeanList(articles,ArticleListVo.class);
         PageVo pageVo = new PageVo(articleListVos, page.getTotal());
         return ResponseResult.okResult(pageVo);
+    }
+
+    @Override
+    public ResponseResult getArticleDetail(Long id) {
+        Article article = getById(id);
+        ArticleDetailVo articleDetailVo = BeanCopyUtils.copyBean(article, ArticleDetailVo.class);
+        //添加 categroyName
+        Long categoryId = articleDetailVo.getCategoryId();
+        Category category = categoryService.getById(categoryId);
+        if(category!=null){
+            articleDetailVo.setCategoryName(category.getName());
+        }
+        return ResponseResult.okResult(articleDetailVo);
     }
 }

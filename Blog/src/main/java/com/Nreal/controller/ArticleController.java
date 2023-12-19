@@ -40,4 +40,10 @@ public class ArticleController {
         return articleService.articleList(pageNum,pageSize,categoryId);
     }
 
+    @GetMapping("/{id}")
+    @ApiOperation(value = "文章详情")
+    public ResponseResult getArticleDetail(@PathVariable("id") Long id){
+        return articleService.getArticleDetail(id);
+    }
+
 }
