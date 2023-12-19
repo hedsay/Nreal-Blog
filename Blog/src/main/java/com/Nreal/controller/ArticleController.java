@@ -7,6 +7,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,6 +32,12 @@ public class ArticleController {
     public ResponseResult hotArticleList(){
         ResponseResult result = articleService.hotArticleList();
         return result;
+    }
+
+    @GetMapping("/articleList/{pageNum}/{pageSize}/{categoryId}")
+    @ApiOperation(value = "文章分页展示")
+    public ResponseResult articleList(@PathVariable Integer pageNum,@PathVariable Integer pageSize,@PathVariable("categoryId") Long categoryId){
+        return articleService.articleList(pageNum,pageSize,categoryId);
     }
 
 }
