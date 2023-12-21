@@ -11,6 +11,7 @@ import com.Nreal.mapper.ArticleMapper;
 import com.Nreal.service.ArticleService;
 import com.Nreal.service.CategoryService;
 import com.Nreal.utils.BeanCopyUtils;
+import com.Nreal.utils.RedisCache;
 import com.Nreal.utils.ResponseResult;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -30,6 +31,9 @@ import java.util.stream.Collectors;
  */
 @Service("articleService")
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> implements ArticleService {
+
+    @Autowired
+    private RedisCache redisCache;
 
     @Override
     public ResponseResult hotArticleList() {
@@ -67,6 +71,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Override
     public ResponseResult getArticleDetail(Long id) {
         Article article = getById(id);
+        // 阅读量查询
+        Integer viewCount = redisCache.getCacheMapValue("article:viewCount", id.toString());
+        article.setViewCount(viewCount.longValue());
         ArticleDetailVo articleDetailVo = BeanCopyUtils.copyBean(article, ArticleDetailVo.class);
         //添加 categroyName
         Long categoryId = articleDetailVo.getCategoryId();
@@ -75,5 +82,11 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             articleDetailVo.setCategoryName(category.getName());
         }
         return ResponseResult.okResult(articleDetailVo);
+    }
+
+    @Override
+    public ResponseResult updateViewCount(Long id) {
+        redisCache.incrementCacheMapValue("article:viewCount",id.toString(),1);
+        return ResponseResult.okResult();
     }
 }
